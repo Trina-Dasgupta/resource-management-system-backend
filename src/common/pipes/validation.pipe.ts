@@ -7,6 +7,12 @@ export class ValidationPipe implements PipeTransform {
   async transform(value: any, metadata: ArgumentMetadata) {
     const { metatype } = metadata;
 
+    // If no body was provided (undefined/null), return early to avoid
+    // class-validator trying to inspect `undefined.constructor`.
+    if (value === undefined || value === null) {
+      return value;
+    }
+
     if (!metatype || !this.toValidate(metatype)) {
       return value;
     }
