@@ -12,4 +12,16 @@ export const appConfig = {
     origin: process.env.CORS_ORIGIN || '*',
     credentials: true,
   },
+  uploads: {
+    destination: process.env.UPLOAD_DEST || 'uploads',
+    maxFileSize:
+      parseInt(process.env.UPLOAD_MAX_FILE_SIZE || '', 10) || 5 * 1024 * 1024,
+    allowedMimeTypes: (
+      process.env.UPLOAD_ALLOWED_MIME_TYPES ||
+      'image/jpeg,image/png,application/pdf'
+    )
+      .split(',')
+      .map((type) => type.trim())
+      .filter(Boolean),
+  },
 };

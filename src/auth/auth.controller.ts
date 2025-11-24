@@ -10,16 +10,20 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
+import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { Public } from './decorators/public.decorator';
 import { GetUser } from './decorators/get-user.decorator';
 
+@ApiTags('Auth')
+@ApiBearerAuth()
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
@@ -41,8 +45,9 @@ export class AuthController {
   @Public()
   @Post('forgot-password')
   @HttpCode(HttpStatus.OK)
-  async forgotPassword(@Body() { email }: { email: string }) {
-    return this.authService.forgotPassword(email);
+  @ApiOperation({ summary: 'Request password reset' })
+  async forgotPassword(@Body() body: ForgotPasswordDto) {
+    return this.authService.forgotPassword(body.email);
   }
 
   @Public()

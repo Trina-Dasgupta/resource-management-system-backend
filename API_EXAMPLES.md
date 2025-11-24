@@ -385,6 +385,42 @@ curl -X POST http://localhost:3001/api/v1/auth/register \
 
 ---
 
+## File Uploads
+
+### Upload File
+**Endpoint:** `POST /files/upload`
+**Authentication:** Determined by upstream guards  
+**Status Code:** 201 Created
+
+```bash
+curl -X POST http://localhost:3001/api/v1/files/upload \
+  -H "Content-Type: multipart/form-data" \
+  -F "file=@/absolute/path/to/invoice.pdf"
+```
+
+**Response:**
+```json
+{
+  "filename": "1731591030000-123456789.pdf",
+  "originalName": "invoice.pdf",
+  "mimeType": "application/pdf",
+  "size": 12048,
+  "path": "uploads/1731591030000-123456789.pdf",
+  "url": "/uploads/1731591030000-123456789.pdf"
+}
+```
+
+### Download File
+**Endpoint:** `GET /files/:filename` (API) or `/uploads/:filename` (static)  
+**Authentication:** None (public static asset)  
+**Status Code:** 200 OK
+
+```bash
+curl -O http://localhost:3001/api/v1/files/1731591030000-123456789.pdf
+```
+
+---
+
 ## Testing with Postman
 
 1. **Create Environment Variables:**

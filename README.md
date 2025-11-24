@@ -23,6 +23,10 @@ This is a **production-ready authentication microservice** built with modern Nod
    - Request/Response logging
    - Input validation
    - Protected routes
+6. **File Uploads**
+   - Multer-powered file upload pipeline
+   - Disk storage with validation and sanitization
+   - Static serving for uploaded assets
 
 ## 🏗️ Architecture
 
@@ -241,6 +245,18 @@ npm run start:dev
 
 ## 🧪 Testing the API
 
+## File Upload API
+
+The upload service exposes `POST /api/v1/files/upload` for handling `multipart/form-data` payloads. Provide a `file` field and the server will store the asset inside the configured `UPLOAD_DEST`, enforcing MIME type and size restrictions. Files can be downloaded through `GET /api/v1/files/:filename` (streamed) or directly from the static `/uploads/<filename>` mount.
+
+```bash
+curl -X POST http://localhost:3001/api/v1/files/upload \
+  -H "Content-Type: multipart/form-data" \
+  -F "file=@/absolute/path/to/logo.png"
+
+curl -O http://localhost:3001/api/v1/files/<stored-filename>
+```
+
 ### Quick Test with cURL
 
 ```bash
@@ -298,6 +314,11 @@ JWT_EXPIRATION=7d
 # Application
 AUTH_SERVICE_PORT=3001
 NODE_ENV=development
+
+# File uploads
+UPLOAD_DEST=uploads
+UPLOAD_MAX_FILE_SIZE=5242880
+UPLOAD_ALLOWED_MIME_TYPES="image/jpeg,image/png,application/pdf"
 ```
 
 ## 🎯 Design Patterns & Best Practices
