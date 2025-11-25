@@ -5,6 +5,7 @@ import {
   ConflictException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { User } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { MailService } from '../mail/mail.service';
 import * as bcrypt from 'bcryptjs';
@@ -42,10 +43,13 @@ export class AuthService {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     try {
+      const name = [firstName, lastName].filter(Boolean).join(' ').trim() || null;
+
       const user = await this.prisma.user.create({
         data: {
           email,
           password: hashedPassword,
+          name,
           firstName,
           lastName,
           phone,
@@ -102,7 +106,7 @@ export class AuthService {
     };
   }
 
-  async validateUser(email: string, password: string): Promise<any> {
+  async validateUser(email: string, password: string): Promise<User | null> {
     const user = await this.prisma.user.findUnique({ where: { email } });
 
     if (!user) {
@@ -115,19 +119,17 @@ export class AuthService {
       return null;
     }
 
-    return user;
+    return user as User;
   }
 
-  async validateJwtUser(payload: any): Promise<any> {
-    const user = await this.prisma.user.findUnique({
-      where: { id: payload.sub },
-    });
+  async validateJwtUser(payload: any): Promise<User | null> {
+    const user = await this.prisma.user.findUnique({ where: { id: payload.sub } });
 
     if (!user || !user.isActive) {
       return null;
     }
 
-    return user;
+    return user as User;
   }
 
   async forgotPassword(email: string): Promise<any> {
@@ -181,7 +183,7 @@ export class AuthService {
 
     // Find user with matching reset token
     const users = await this.prisma.user.findMany();
-    let foundUser: any = null;
+    let foundUser: User | null = null;
 
     for (const user of users) {
       if (
@@ -323,17 +325,18 @@ export class AuthService {
   }
 
   // Helper methods
-  private generateToken(user: any): string {
+  private generateToken(user: User): string {
     const payload = {
       email: user.email,
       sub: user.id,
+      role: user.role,
     };
 
     return this.jwtService.sign(payload);
   }
 
-  private excludePassword(user: any): any {
-    const { password, resetPasswordToken, emailVerificationToken, ...userWithoutSensitiveData } = user;
+  private excludePassword(user: User & Record<string, any>): any {
+    const { password, resetPasswordToken, emailVerificationToken, ...userWithoutSensitiveData } = user as any;
     return userWithoutSensitiveData;
   }
 

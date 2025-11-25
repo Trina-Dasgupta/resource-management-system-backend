@@ -385,5 +385,11 @@ MIT
 wsl --install
 
 wsl ./setup.sh
-#   r e s o u r c e - m a n a g e m e n t - s y s t e m - b a c k e n d  
- 
+
+
+setup judge0.conf
+password---gcusQPjqt4t3BE7CGBWDVG2VBUrhT9VS
+
+
+JUDGE0 setup--https://github.com/judge0/judge0/blob/master/CHANGELOG.md
+
