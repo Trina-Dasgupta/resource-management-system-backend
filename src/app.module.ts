@@ -5,6 +5,10 @@ import { AuthModule } from './auth/auth.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
 import { FilesModule } from './files/files.module';
+import { ProblemsModule } from './problems/problems.module';
+import { ExecuteModule } from './execute/execute.module';
+import { SubmissionsModule } from './submissions/submissions.module';
+import { PlaylistsModule } from './playlists/playlists.module';
 
 @Module({
   imports: [
@@ -15,6 +19,10 @@ import { FilesModule } from './files/files.module';
     PrismaModule,
     AuthModule,
     FilesModule,
+    ProblemsModule,
+    ExecuteModule,
+    SubmissionsModule,
+    PlaylistsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
