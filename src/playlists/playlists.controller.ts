@@ -25,7 +25,7 @@ class AddProblemsDto {
 
 @ApiTags('Playlists')
 @ApiBearerAuth('access-token')
-@Controller('playlists')
+@Controller('playlist')
 export class PlaylistsController {
   constructor(private readonly playlistsService: PlaylistsService) {}
 
