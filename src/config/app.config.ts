@@ -9,7 +9,7 @@ export const appConfig = {
     url: process.env.DATABASE_URL,
   },
   cors: {
-  origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
+  origin: process.env.CORS_ORIGIN || '*',
   credentials: true,
 },
 
