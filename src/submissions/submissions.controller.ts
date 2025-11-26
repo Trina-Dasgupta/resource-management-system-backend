@@ -5,12 +5,12 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Submissions')
 @ApiBearerAuth('access-token')
-@Controller('submissions')
+@Controller('submission')
 export class SubmissionsController {
   constructor(private readonly submissionsService: SubmissionsService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Get()
+  @Get('get-all-submissions')
   async getAllSubmission(@Req() req: any) {
     const userId = req.user.id;
     const submissions = await this.submissionsService.getAllSubmissionsForUser(userId);
@@ -18,7 +18,7 @@ export class SubmissionsController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('problem/:problemId')
+  @Get('get-submission/:problemId')
   async getSubmissionsForProblem(@Req() req: any, @Param('problemId') problemId: string) {
     const userId = req.user.id;
     const submissions = await this.submissionsService.getSubmissionsForProblem(userId, problemId);
@@ -26,7 +26,7 @@ export class SubmissionsController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('problem/:problemId/count')
+  @Get('get-submissions-count/:problemId')
   async getAllTheSubmissionsForProblem(@Param('problemId') problemId: string) {
     const count = await this.submissionsService.countSubmissionsForProblem(problemId);
     return { success: true, message: 'Submissions fetched successfully', count };

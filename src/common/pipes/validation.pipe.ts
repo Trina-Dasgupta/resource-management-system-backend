@@ -23,7 +23,7 @@ export class ValidationPipe implements PipeTransform {
       whitelist: true,
       forbidNonWhitelisted: true,
     });
-
+    console.log(errors,"errors");
     if (errors.length > 0) {
       const formattedErrors = errors.map((error) => ({
         field: error.property,

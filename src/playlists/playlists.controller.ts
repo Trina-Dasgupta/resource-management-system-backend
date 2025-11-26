@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseGuards, Req, Get, Param, Delete } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Req, Get, Param, Delete, HttpCode } from '@nestjs/common';
 import { PlaylistsService } from './playlists.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ApiBearerAuth, ApiTags, ApiOperation, ApiBody, ApiProperty } from '@nestjs/swagger';
@@ -30,7 +30,21 @@ export class PlaylistsController {
   constructor(private readonly playlistsService: PlaylistsService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Post()
+  @Get()
+  async getPlayAllListDetails(@Req() req: any) {
+    const playLists = await this.playlistsService.getAllPlaylistsForUser(req.user.id);
+    return { success: true, message: 'Playlists fetched successfully', playLists };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':playlistId')
+  async getPlayListDetails(@Req() req: any, @Param('playlistId') playlistId: string) {
+    const playList = await this.playlistsService.getPlaylistDetails(req.user.id, playlistId);
+    return { success: true, message: 'Playlist fetched successfully', playList };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('create-playlist')
   @ApiBody({
     schema: {
       example: {
@@ -48,21 +62,7 @@ export class PlaylistsController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get()
-  async getPlayAllListDetails(@Req() req: any) {
-    const playLists = await this.playlistsService.getAllPlaylistsForUser(req.user.id);
-    return { success: true, message: 'Playlists fetched successfully', playLists };
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Get(':playlistId')
-  async getPlayListDetails(@Req() req: any, @Param('playlistId') playlistId: string) {
-    const playList = await this.playlistsService.getPlaylistDetails(req.user.id, playlistId);
-    return { success: true, message: 'Playlist fetched successfully', playList };
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Post(':playlistId/problems')
+  @Post(':playlistId/add-problem')
   @ApiBody({
     schema: {
       example: {
@@ -78,13 +78,15 @@ export class PlaylistsController {
 
   @UseGuards(JwtAuthGuard)
   @Delete(':playlistId')
+  @HttpCode(200)
   async deletePlayList(@Req() req: any, @Param('playlistId') playlistId: string) {
     const deletedPlaylist = await this.playlistsService.deletePlaylist(req.user.id, playlistId);
     return { success: true, message: 'Playlist deleted successfully', deletedPlaylist };
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post(':playlistId/problems/remove')
+  @Delete(':playlistId/remove-problem')
+  @HttpCode(200)
   @ApiBody({
     schema: {
       example: {

@@ -9,9 +9,10 @@ export const appConfig = {
     url: process.env.DATABASE_URL,
   },
   cors: {
-    origin: process.env.CORS_ORIGIN || '*',
-    credentials: true,
-  },
+  origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
+  credentials: true,
+},
+
   uploads: {
     destination: process.env.UPLOAD_DEST || 'uploads',
     maxFileSize:

@@ -8,6 +8,7 @@ import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 import { ValidationPipe } from './common/pipes/validation.pipe';
 import { appConfig } from './config/app.config';
+import cookieParser from 'cookie-parser';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
@@ -43,6 +44,9 @@ async function bootstrap() {
   app.useStaticAssets(absoluteUploadPath, {
     prefix: '/uploads/',
   });
+
+  // Enable cookie parsing so req.cookies is available (used by JwtStrategy)
+  app.use(cookieParser());
 
   // Swagger setup
   const swaggerConfig = new DocumentBuilder()

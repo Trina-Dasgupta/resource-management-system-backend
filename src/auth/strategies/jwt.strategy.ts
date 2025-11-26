@@ -7,7 +7,15 @@ import { AuthService } from '../auth.service';
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private authService: AuthService) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      // Try cookie first (cookie name: 'jwt'), then Authorization header
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        (req: any) => {
+          if (!req) return null;
+          // cookie-parser must be enabled so req.cookies is populated
+          return req.cookies && req.cookies.jwt ? req.cookies.jwt : null;
+        },
+        ExtractJwt.fromAuthHeaderAsBearerToken(),
+      ]),
       ignoreExpiration: false,
       secretOrKey: process.env.JWT_SECRET || 'your-secret-key',
     });
